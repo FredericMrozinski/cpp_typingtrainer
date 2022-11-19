@@ -17,7 +17,6 @@ int main(int argc, char ** argv)
     mvwprintw(sample_text_win, 0, 1, "Text to type");
     mvwprintw(sample_text_win, 1, 1, "This is the sample text");
     mvwprintw(input_text_win, 0, 1, "Your input");
-    mvwprintw(input_text_win, 1, 1, "Here, we will show the input");
     mvwprintw(statistic_info_win, 0, 1, "Statistics");
     mvwprintw(statistic_info_win, 1, 1, "Here, we will show the statistics");
 
@@ -25,12 +24,15 @@ int main(int argc, char ** argv)
     wrefresh(input_text_win);
     wrefresh(statistic_info_win);
 
-    noecho()
+    noecho();
+    char one_length_str[2] = {0, 0};
     char c{};
+    int currentPos = 1;
 
     while((c = getch()) != 'a')
     {
-        mvwprintw(input_text_win, 1, 1, &c);
+        one_length_str[0] = c;
+        mvwprintw(input_text_win, 1, currentPos++, one_length_str);
         wrefresh(input_text_win);
     }
 
