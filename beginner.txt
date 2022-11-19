@@ -1,0 +1,15 @@
+Let’s discuss how to read information from a text file in C++. For simplicity,
+we assume that the end of a stream’s buffer is marked with a special character
+named end-of-file (EOF). This special character cannot be read, i.e. an attempt
+to read it makes the stream to enter in bad-state.
+The following code skeleton illustrates how to read information from a text file. 
+Zet inFil be a stream connected to the text file.
+Testing if the stream inFil is in good-state, as test condition of the while-loop,
+allows us to check whether the last reading operation from the file has succeeded. 
+Uf so then we can proceed with doing whatever computations are needed with the data item just
+read from the file and then attempt to read the next data item from the file.
+In the previous section I/O streams: Test a stream state, we discussed how to test
+a stream state and gave some examples of how to read from stream std::cin. Note that
+reading from std::cin is not conceptually different from reading from a file stream.
+Example 1: we show a program that reads a list of numbers from the file and stores
+them in a vector. The list of values stored in the vector are also displayed.

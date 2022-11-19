@@ -1,6 +1,18 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 
-std::string get_sample_text_from_file()
-{
+using namespace std;
 
+int main() {
+    ifstream is("beginner.txt");
+    string line;
+
+    while (getline(is, line)) {
+        cout << line << endl;
+    }
+    return 0;
 }
+
+//text in string spreichern 
+//substring nur für die erste Zeile
