@@ -1,5 +1,35 @@
 #include <iostream>
 #include <ncurses.h>
+using namespace std;
+
+/*
+    This function will be called on program startup. It will offer the user to
+    choose a difficulty level for the typing test.
+*/
+void show_start_menu();
+
+/*
+    After the user selected a difficulty from the start menu, this function will
+    be called and prepares all necessary data to later run the typing test.
+    The necessary data is:
+        - The sample typing text that is being read from file depending on the
+          difficulty
+    
+    Parameter:
+        - difficulty: 0 - easy, 1 - medium, 2 - hard
+
+    Returns:
+        - string: The sample string that is being read from the text file, depending
+          on the difficulty.
+*/
+string init_typing_trainer(int difficulty);
+
+/*
+    This function runs the typing trainer.
+*/
+void run_typing_trainer(string & sample_text);
+
+
 
 int main(int argc, char ** argv)
 {
