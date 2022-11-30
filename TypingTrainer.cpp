@@ -1,12 +1,24 @@
 #include <iostream>
 #include <ncurses.h>
+#include <fstream>
+#include <string>
 using namespace std;
+
+
 
 /*
     This function will be called on program startup. It will offer the user to
     choose a difficulty level for the typing test.
 */
+
+char *difficulty[]={
+    "Easy",
+    "Middle",
+    "Difficult"
+};
+
 void show_start_menu();
+
 
 /*
     After the user selected a difficulty from the start menu, this function will
@@ -48,17 +60,23 @@ void run_typing_trainer(const string sample_text)
     WINDOW *sample_text_win = newwin(3, window_length, 0, 0);
     WINDOW *input_text_win = newwin(3, window_length, 3, 0);
     WINDOW *statistic_info_win = newwin(3, window_length, 6, 0);
+    WINDOW *choose_difficulty=newwin(3, window_length,9,0 );
     box(sample_text_win, 0, 0);
     box(input_text_win, 0, 0);
     box(statistic_info_win, 0, 0);
+    box(choose_difficulty,0,0);
     mvwprintw(sample_text_win, 0, 1, "Text to type");
     mvwprintw(input_text_win, 0, 1, "Your input");
     mvwprintw(statistic_info_win, 0, 1, "Statistics");
     mvwprintw(statistic_info_win, 1, 1, "Here, we will show the statistics");
+    mvwprintw(choose_difficulty,0,1,"choose difficulty");
+    mvwprintw(choose_difficulty,1,1,difficulty[0]);
+
     refresh();
     wrefresh(sample_text_win);
     wrefresh(input_text_win);
     wrefresh(statistic_info_win);
+    wrefresh(choose_difficulty);
 
     // noecho ensures that user typing is not automatically written into the terminal
     // (because we want to do that manually)
@@ -130,6 +148,18 @@ void run_typing_trainer(const string sample_text)
 
 
 int main(int argc, char ** argv)
+
+
 {
-    run_typing_trainer("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+    ifstream is("beginner.txt");
+    string line;
+    string FilContent="";
+
+    while (getline(is, line)) {
+        cout << line << endl;
+        FilContent+=line;
+    }
+    
+    
+    run_typing_trainer(FilContent);
 }
