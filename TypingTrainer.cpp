@@ -11,11 +11,11 @@ using namespace std;
     choose a difficulty level for the typing test.
 */
 
-char *difficulty[]={
-    "Easy",
-    "Middle",
-    "Difficult"
-};
+// char *difficulty[]={
+//     "Easy",
+//     "Middle",
+//     "Difficult"
+// };
 
 void show_start_menu();
 
@@ -70,7 +70,7 @@ void run_typing_trainer(const string sample_text)
     mvwprintw(statistic_info_win, 0, 1, "Statistics");
     mvwprintw(statistic_info_win, 1, 1, "Here, we will show the statistics");
     mvwprintw(choose_difficulty,0,1,"choose difficulty");
-    mvwprintw(choose_difficulty,1,1,difficulty[0]);
+    //mvwprintw(choose_difficulty,1,1,difficulty[0]);
 
     refresh();
     wrefresh(sample_text_win);
@@ -147,19 +147,16 @@ void run_typing_trainer(const string sample_text)
 
 
 
-int main(int argc, char ** argv)
-
-
+int main()
 {
     ifstream is("beginner.txt");
     string line;
-    string FilContent="";
+    string file_content="";
 
     while (getline(is, line)) {
-        cout << line << endl;
-        FilContent+=line;
+        file_content+=line;
     }
     
     
-    run_typing_trainer(FilContent);
+    run_typing_trainer(file_content);
 }
