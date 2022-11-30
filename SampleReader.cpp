@@ -1,18 +1,11 @@
 #include <iostream>
-#include <fstream>
-#include <string>
 
-using namespace std;
-
+#include <ncurses.h>
 int main() {
-    ifstream is("beginner.txt");
-    string line;
-
-    while (getline(is, line)) {
-        cout << line << endl;
-    }
+    initscr();  /* init ncurses */
+    keypad(stdscr, TRUE);   /* get keyboard input */
+    addstr("Press enter to exit.\n");
+    while (10 != getch()) {}    /* 10 == enter */
+    endwin();   /* end ncurses */
     return 0;
 }
-
-//text in string spreichern 
-//substring nur für die erste Zeile

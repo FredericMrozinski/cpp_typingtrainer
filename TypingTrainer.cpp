@@ -2,6 +2,7 @@
 #include <ncurses.h>
 #include <fstream>
 #include <string>
+#include <chrono>
 using namespace std;
 
 
@@ -16,7 +17,6 @@ using namespace std;
 //     "Middle",
 //     "Difficult"
 // };
-
 void show_start_menu();
 
 
@@ -68,7 +68,7 @@ void run_typing_trainer(const string sample_text)
     mvwprintw(sample_text_win, 0, 1, "Text to type");
     mvwprintw(input_text_win, 0, 1, "Your input");
     mvwprintw(statistic_info_win, 0, 1, "Statistics");
-    mvwprintw(statistic_info_win, 1, 1, "Here, we will show the statistics");
+    mvwprintw(statistic_info_win, 1, 1, "Error Count: 0");
     mvwprintw(choose_difficulty,0,1,"choose difficulty");
     //mvwprintw(choose_difficulty,1,1,difficulty[0]);
 
@@ -85,6 +85,8 @@ void run_typing_trainer(const string sample_text)
     // User's current typing position in text. E.g. position 4 for "Foo Bar" means 
     // that the user needs to input the character 'B' now
     int pos_in_sample_text = 0;
+    //count the numbers of the wrong charachters (red marked)
+    int typing_error=0;
     
     // Number of characters in the sample text
     int len_of_sample_text = sample_text.size();
@@ -126,6 +128,18 @@ void run_typing_trainer(const string sample_text)
                 mvwaddch(input_text_win, 1, pos_in_sample_text - text_segment_start + 1, input_char);
                 wattroff(input_text_win,COLOR_PAIR(2));
                 wrefresh(input_text_win);
+                typing_error++;
+                mvwprintw(statistic_info_win, 1, 1, ("Error Count: " + to_string(typing_error)).c_str());
+                wrefresh(statistic_info_win);
+                auto start_time=chrono::steady_clock::now();
+                
+                keypad(stdscr, TRUE);   /* get keyboard input */
+                addstr("Press enter to exit.\n");
+                while (10 != getch()){}    /* 10 == enter */
+                auto end_time=chrono::steady_clock::now();
+                double elapsed_time=double(chrono::duration_cast<chrono::seconds>(end_time-start_time).count());
+                endwin();   /* end ncurses */
+            
             }
         }
 
