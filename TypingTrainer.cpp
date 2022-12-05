@@ -26,7 +26,6 @@ void show_start_menu();
     The necessary data is:
         - The sample typing text that is being read from file depending on the
           difficulty
-    
     Parameter:
         - difficulty: 0 - easy, 1 - medium, 2 - hard
 
@@ -130,18 +129,29 @@ void run_typing_trainer(const string sample_text)
                 wrefresh(input_text_win);
                 typing_error++;
                 mvwprintw(statistic_info_win, 1, 1, ("Error Count: " + to_string(typing_error)).c_str());
+                mvwprintw(statistic_info_win, 1, 75, ("Press Enter to Exit"));
                 wrefresh(statistic_info_win);
-                auto start_time=chrono::steady_clock::now();
+            }
+        if(input_char==getch()==sample_text[KEY_ENTER]){
+                mvwprintw(statistic_info_win, 1, 50, ("Prwdewedewdewdit"));
+                wrefresh(statistic_info_win);
+            }
+        
+
+            
+
+                //auto start_time=chrono::steady_clock::now();
+
                 
-                keypad(stdscr, TRUE);   /* get keyboard input */
-                addstr("Press enter to exit.\n");
-                while (10 != getch()){}    /* 10 == enter */
-                auto end_time=chrono::steady_clock::now();
-                double elapsed_time=double(chrono::duration_cast<chrono::seconds>(end_time-start_time).count());
-                endwin();   /* end ncurses */
+                //keypad(stdscr, TRUE);   /* get keyboard input */
+                //addstr("Press enter to exit.\n");
+                //while (10 != getch()){}    /* 10 == enter */
+                //auto end_time=chrono::steady_clock::now();
+                //double elapsed_time=double(chrono::duration_cast<chrono::seconds>(end_time-start_time).count());
+                //endwin();   /* end ncurses */
             
             }
-        }
+        
 
         // This is a cosmetic fix that is needed
         mvwaddch(input_text_win, 1, pos_in_sample_text - text_segment_start + 1, ' '); 
