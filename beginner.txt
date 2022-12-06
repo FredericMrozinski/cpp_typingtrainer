@@ -1,3 +1,1 @@
-Almost all the programmers or every Computer science student in the wild would have practiced C programming, some might have just memorized few programs for the sake of exams. But still, those who really gained the knowledge to write C programs would have missed out all the interesting concepts of C, and Curses is one of them, available on all Linux and Unix variants. You can run Curses with Cygwin for Windows. Now after years of development and with new features added it is called as Ncurses ( New Curses ). Developed in early 1980 to manage application’s display on character-cell terminals.
-
-Programming with NCurses will be lot more interesting because of the formatted output, but it is lot more than that. It aims at providing a library of advanced functions that can be used to develop wonderful applications with “GUI like” interface with C. You can control every input including keyboard and mouse, as well as the output
+Almost all the programmers

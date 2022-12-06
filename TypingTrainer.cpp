@@ -101,8 +101,15 @@ void run_typing_trainer(const string sample_text)
     // The character that has last been input
     char input_char;
 
+    //Calculate the time 
+    auto start_time=chrono::steady_clock::now();
+
+
+    bool user_interrupted_input = false;
+
+
     // We run the typing trainer until we are at the end of the sample text
-    while(text_segment_start < len_of_sample_text)
+    while(pos_in_sample_text < len_of_sample_text && !user_interrupted_input)
     {
         // Compute which part of the string is currently displayed in the window
         string current_text_segment = sample_text.substr(text_segment_start, displayable_text_len);
@@ -129,28 +136,16 @@ void run_typing_trainer(const string sample_text)
                 wrefresh(input_text_win);
                 typing_error++;
                 mvwprintw(statistic_info_win, 1, 1, ("Error Count: " + to_string(typing_error)).c_str());
-                mvwprintw(statistic_info_win, 1, 75, ("Press Enter to Exit"));
                 wrefresh(statistic_info_win);
             }
-        if(input_char==getch()==sample_text[KEY_ENTER]){
-                mvwprintw(statistic_info_win, 1, 50, ("Prwdewedewdewdit"));
-                wrefresh(statistic_info_win);
-            }
-        
-
+            if(input_char=='\n'){
             
-
-                //auto start_time=chrono::steady_clock::now();
-
+                user_interrupted_input = true;
+                break;
                 
-                //keypad(stdscr, TRUE);   /* get keyboard input */
-                //addstr("Press enter to exit.\n");
-                //while (10 != getch()){}    /* 10 == enter */
-                //auto end_time=chrono::steady_clock::now();
-                //double elapsed_time=double(chrono::duration_cast<chrono::seconds>(end_time-start_time).count());
-                //endwin();   /* end ncurses */
-            
             }
+            
+        }
         
 
         // This is a cosmetic fix that is needed
@@ -164,11 +159,29 @@ void run_typing_trainer(const string sample_text)
         // the whole text instead
         if(pos_in_sample_text > displayable_text_len / 2)
             text_segment_start++;
-    }    
+
+        if(pos_in_sample_text == len_of_sample_text)
+        {
+            // Refresh the shown text in the input window
+            mvwprintw(input_text_win, 1, 1, (current_text_segment.substr(0, pos_in_sample_text - text_segment_start)).c_str());
+            wrefresh(input_text_win);
+        }
+    }
+
+    
+    auto end_time2=chrono::steady_clock::now();
+    auto elapsed_time=int(chrono::duration_cast<chrono::seconds>(end_time2-start_time).count());
+    mvwprintw(statistic_info_win, 1, 25, ("Your time is: "+to_string(elapsed_time) + " seconds").c_str());
+    mvwprintw(statistic_info_win, 1, 65, ("Press Enter to Exit:"));
+    wrefresh(statistic_info_win);
+    while(getch() != '\n');
 
     endwin();
-}
 
+
+
+
+}
 
 
 int main()
