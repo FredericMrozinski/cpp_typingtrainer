@@ -5,40 +5,30 @@
 #include <chrono>
 using namespace std;
 
-
-
 /*
-    This function will be called on program startup. It will offer the user to
-    choose a difficulty level for the typing test.
+    This function return if a charachter may appear in the text (this excludes charachters like arrow, keyup, ...)
 */
-
-// char *difficulty[]={
-//     "Easy",
-//     "Middle",
-//     "Difficult"
-// };
-void show_start_menu();
-
-
-/*
-    After the user selected a difficulty from the start menu, this function will
-    be called and prepares all necessary data to later run the typing test.
-    The necessary data is:
-        - The sample typing text that is being read from file depending on the
-          difficulty
-    Parameter:
-        - difficulty: 0 - easy, 1 - medium, 2 - hard
-
-    Returns:
-        - string: The sample string that is being read from the text file, depending
-          on the difficulty.
-*/
-string init_typing_trainer(int difficulty);
-
 bool is_valid_text_char(char c)
 {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') 
     || c == '.' || c == ',' || c == ' ';
+}
+
+/*
+    read the sample text from the file and return's it
+*/
+string read_sample_text()
+{
+    ifstream is("beginner.txt");
+    string line;
+    string file_content="";
+
+    while (getline(is, line)) 
+    {
+        file_content += line;
+    }
+   
+    return file_content;
 }
 
 /*
@@ -59,23 +49,18 @@ void run_typing_trainer(const string sample_text)
     WINDOW *sample_text_win = newwin(3, window_length, 0, 0);
     WINDOW *input_text_win = newwin(3, window_length, 3, 0);
     WINDOW *statistic_info_win = newwin(3, window_length, 6, 0);
-    WINDOW *choose_difficulty=newwin(3, window_length,9,0 );
     box(sample_text_win, 0, 0);
     box(input_text_win, 0, 0);
     box(statistic_info_win, 0, 0);
-    box(choose_difficulty,0,0);
     mvwprintw(sample_text_win, 0, 1, "Text to type");
     mvwprintw(input_text_win, 0, 1, "Your input");
     mvwprintw(statistic_info_win, 0, 1, "Statistics");
     mvwprintw(statistic_info_win, 1, 1, "Error Count: 0");
-    mvwprintw(choose_difficulty,0,1,"choose difficulty");
-    //mvwprintw(choose_difficulty,1,1,difficulty[0]);
-
     refresh();
     wrefresh(sample_text_win);
     wrefresh(input_text_win);
     wrefresh(statistic_info_win);
-    wrefresh(choose_difficulty);
+    
 
     // noecho ensures that user typing is not automatically written into the terminal
     // (because we want to do that manually)
@@ -104,7 +89,7 @@ void run_typing_trainer(const string sample_text)
     //Calculate the time 
     auto start_time=chrono::steady_clock::now();
 
-
+    // endicates wether the user want to interrupt the programm early
     bool user_interrupted_input = false;
 
 
@@ -138,16 +123,19 @@ void run_typing_trainer(const string sample_text)
                 mvwprintw(statistic_info_win, 1, 1, ("Error Count: " + to_string(typing_error)).c_str());
                 wrefresh(statistic_info_win);
             }
-            if(input_char=='\n'){
-            
+            else if(input_char=='\n')
+            {
                 user_interrupted_input = true;
                 break;
-                
+            }
+            else if(input_char=='!')
+            {
+                mvwaddch(input_text_win, 1, pos_in_sample_text - text_segment_start + 1, ' '); 
+                wmove(input_text_win, 1, pos_in_sample_text - text_segment_start + 1);
+                wrefresh(input_text_win);
             }
             
         }
-        
-
         // This is a cosmetic fix that is needed
         mvwaddch(input_text_win, 1, pos_in_sample_text - text_segment_start + 1, ' '); 
 
@@ -159,7 +147,7 @@ void run_typing_trainer(const string sample_text)
         // the whole text instead
         if(pos_in_sample_text > displayable_text_len / 2)
             text_segment_start++;
-
+        //check if the last charachter has been input and refresh the window
         if(pos_in_sample_text == len_of_sample_text)
         {
             // Refresh the shown text in the input window
@@ -168,7 +156,7 @@ void run_typing_trainer(const string sample_text)
         }
     }
 
-    
+    //calculate the user time depending on start and end time
     auto end_time2=chrono::steady_clock::now();
     auto elapsed_time=int(chrono::duration_cast<chrono::seconds>(end_time2-start_time).count());
     mvwprintw(statistic_info_win, 1, 25, ("Your time is: "+to_string(elapsed_time) + " seconds").c_str());
@@ -186,14 +174,5 @@ void run_typing_trainer(const string sample_text)
 
 int main()
 {
-    ifstream is("beginner.txt");
-    string line;
-    string file_content="";
-
-    while (getline(is, line)) {
-        file_content+=line;
-    }
-    
-    
-    run_typing_trainer(file_content);
+    run_typing_trainer(read_sample_text());
 }
