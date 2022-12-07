@@ -1,0 +1,5 @@
+Typing training statistics:
+	Characters typed: 22
+	Mistakes made: 0
+	Time (sec.): 2
+	Typing speed (characters / min.): 660
