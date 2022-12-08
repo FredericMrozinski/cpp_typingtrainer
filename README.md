@@ -1,7 +1,7 @@
 # Typing-Trainer
 
 
-# typingTrainer ✌️
+# typingTrainer  ✌️
 
 Project idea for the Advanced Programming course by Anastasia Golovin anastasia.golovin@tum.de and Mykyta Smyrnov ge78daq@mytum.de. 
 
