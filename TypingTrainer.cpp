@@ -25,15 +25,53 @@ using namespace std;
 #define KEY_ENTER 10
 #define KEY_ESC 27
 
-struct typing_stats
-{
-    int chars_typed;
-    float elapsed_time_sec;
-    int num_of_mistakes;
-    float type_rate;
-};
+// struct typing_stats
+// {
+//     int chars_typed;
+//     float elapsed_time_sec;
+//     int num_of_mistakes;
+//     float type_rate;
+// };
+
+string read_sample_text(string file_location);
+TypingStats run_typing_trainer(const string sample_text);
 
 std::vector<User> users;
+
+void write_users()
+{
+    ofstream myfile;
+    myfile.open ("users.txt");
+
+    for(const User & u : users)
+    {
+        myfile << u << std::endl;
+    }
+
+    myfile.close();
+}
+
+void read_users()
+{
+    users.erase(users.begin(), users.end());
+    
+    ifstream istr("users.txt");
+    string current_line;
+    string current_user = "";
+
+    while (getline(istr, current_line)) 
+    {
+        if(current_line != "")
+            current_user += current_line + '\n';
+        else if(current_user != "")
+        {
+            User * new_user = user_from_string(current_user);
+            users.push_back(*new_user);
+
+            current_user = "";
+        }
+    }
+}
 
 void show_start_menu_sprint_2()
 {
@@ -101,6 +139,7 @@ void show_start_menu_sprint_2()
 
             menu_page = 5;
             user_input = 0;
+            write_users();
             continue;
         }
         // Delete user page
@@ -123,11 +162,12 @@ void show_start_menu_sprint_2()
             // Delete the user from the array
             if(user_input != '1' + i)
             {
-                users.erase(users.begin() + i);
+                users.erase(users.begin() + user_input - '1');
             }
 
             menu_page = 0;
             user_input = 0;
+            write_users();
             continue;
         }
         // Load user page
@@ -151,7 +191,7 @@ void show_start_menu_sprint_2()
             // Mark the selected user as selected
             if(user_input != '1' + i)
             {
-                user_selected = &(users.at(i - 1));
+                user_selected = &(users.at(user_input - '1'));
             }
 
             menu_page = 4;
@@ -177,6 +217,7 @@ void show_start_menu_sprint_2()
             addstr("(1) Easy, i.e. middle row key\n");
             addstr("(2) Intermediate, i.e. middle and top row keys\n");
             addstr("(3) Difficult, i.e. all keys\n");
+
         }
         // Show user progess
         else if(menu_page == 6)
@@ -207,6 +248,22 @@ void show_start_menu_sprint_2()
             getch();
 
             menu_page = 4;
+            write_users();
+            continue;
+        }
+        // Run typing trainer
+        else if(menu_page == 8)
+        {
+            addstr("=====================Typing Trainer=======================\n");
+            addstr(("Hi, " + user_selected->user_name + ", when you're ready to start, press any key.\n\n").c_str());
+
+            getch();
+
+            TypingStats stats = run_typing_trainer(read_sample_text("beginner.txt"));
+            user_selected->user_typing_stats = user_selected->user_typing_stats + stats;
+            write_users();
+
+            menu_page = 6;
             continue;
         }
 
@@ -239,6 +296,10 @@ void show_start_menu_sprint_2()
             {
                 menu_page = 7;
             }
+            else if(user_input == '4')
+            {
+                menu_page = 8;
+            }
             else if(user_input == '5')
             {
                 menu_page = 0;
@@ -251,6 +312,8 @@ void show_start_menu_sprint_2()
             {
                 user_selected->difficulty_level = user_input - '0';
                 menu_page = 4;
+                write_users();
+
             }
             
         }
@@ -362,25 +425,25 @@ string read_sample_text(string file_location)
     This function saves typing statistics into a text file at
     a specific location.
 */
-void write_typing_stats(typing_stats stats, string file_location)
-{
-    ofstream ostr;
-    ostr.open(file_location);
-    if(ostr.is_open())
-    {
-        ostr << "Typing training statistics:\n\tCharacters typed: " << stats.chars_typed
-            << "\n\tMistakes made: " << stats.num_of_mistakes << "\n\tTime (sec.): "
-            << stats.elapsed_time_sec << "\n\tTyping speed (characters / min.): " << stats.type_rate << endl;
-        ostr.close();
-    }
-    else
-        cout << "Could not save typing statistics in a text file due to an error." << endl;
-}
+// void write_typing_stats(typing_stats stats, string file_location)
+// {
+//     ofstream ostr;
+//     ostr.open(file_location);
+//     if(ostr.is_open())
+//     {
+//         ostr << "Typing training statistics:\n\tCharacters typed: " << stats.chars_typed
+//             << "\n\tMistakes made: " << stats.num_of_mistakes << "\n\tTime (sec.): "
+//             << stats.elapsed_time_sec << "\n\tTyping speed (characters / min.): " << stats.type_rate << endl;
+//         ostr.close();
+//     }
+//     else
+//         cout << "Could not save typing statistics in a text file due to an error." << endl;
+// }
 
 /*
     This function runs the typing trainer and displays statistics after its termination.
 */
-typing_stats run_typing_trainer(const string sample_text)
+TypingStats run_typing_trainer(const string sample_text)
 {
     initscr();
 
@@ -558,7 +621,7 @@ typing_stats run_typing_trainer(const string sample_text)
 
     endwin();
 
-    typing_stats training_stats;
+    TypingStats training_stats;
     training_stats.chars_typed = pos_in_sample_text;
     training_stats.elapsed_time_sec = elapsed_time;
     training_stats.type_rate = chars_per_minute;
@@ -574,5 +637,6 @@ int main()
     // typing_stats training_stats = run_typing_trainer(read_sample_text("beginner.txt"));
     // write_typing_stats(training_stats, "statistics.txt");
 
+    read_users();
     show_start_menu_sprint_2();
 }

@@ -39,7 +39,7 @@ std::ostream & operator<< (std::ostream & st, const User & user)
         << user.user_typing_stats << std::endl;
 }
 
-std::unique_ptr<User> user_from_string(const std::string & user_str)
+User* user_from_string(const std::string & user_str)
 {
     std::string str = user_str;
 
@@ -59,7 +59,7 @@ std::unique_ptr<User> user_from_string(const std::string & user_str)
     }
     std::string user_name = str.substr(0, new_line_pos);
     str = str.substr(new_line_pos + 1);
-    std::unique_ptr<User> to_build = std::make_unique<User>(user_name);
+    User* to_build = new User(user_name);
 
     // Parse difficulty
     new_line_pos = str.find('\n');

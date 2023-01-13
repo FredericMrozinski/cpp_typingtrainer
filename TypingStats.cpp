@@ -13,6 +13,17 @@ class TypingStats
 
         friend std::ostream & operator<< (std::ostream & st, const TypingStats & stats);
 
+        TypingStats operator+(const TypingStats & other_stats)
+        {
+            TypingStats new_stats;
+            new_stats.chars_typed = other_stats.chars_typed + chars_typed;
+            new_stats.elapsed_time_sec = other_stats.num_of_mistakes + elapsed_time_sec;
+            new_stats.num_of_mistakes = other_stats.num_of_mistakes + num_of_mistakes;
+            new_stats.type_rate = new_stats.chars_typed / new_stats.elapsed_time_sec * 60.;
+
+            return new_stats;
+        }
+
         void flush()
         {
             chars_typed = 0;
@@ -77,7 +88,7 @@ std::unique_ptr<TypingStats> stats_from_string(const std::string & stat_str)
     {
         throw std::invalid_argument("Error in string format: TypingStats cannot be created.");
     }
-    to_build->type_rate = std::stoi(str.substr(0, new_line_pos));
+    to_build->type_rate = std::stof(str.substr(0, new_line_pos));
     str = str.substr(new_line_pos + 1);
 
     return to_build;
