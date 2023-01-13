@@ -5,6 +5,8 @@
 #include <chrono>
 #include <array>
 #include <memory>
+#include <vector>
+#include "User.cpp"
 using namespace std;
 
 // Ncurses defines values for the enter and backspace key that
@@ -16,8 +18,12 @@ using namespace std;
 #ifdef KEY_ENTER
     #undef KEY_ENTER
 #endif
+#ifdef KEY_ESC
+    #undef KEY_ESC
+#endif
 #define KEY_BACKSPACE 127
 #define KEY_ENTER 10
+#define KEY_ESC 27
 
 struct typing_stats
 {
@@ -26,6 +32,233 @@ struct typing_stats
     int num_of_mistakes;
     float type_rate;
 };
+
+std::vector<User> users;
+
+void show_start_menu_sprint_2()
+{
+    initscr();
+
+    int menu_page = 0;
+    int user_input = 0;
+    User* user_selected = nullptr;
+    
+    while(menu_page != 0 || user_input != '4')
+    {
+        clear();
+
+        // Main menu page
+        if(menu_page == 0)
+        {
+            addstr("=====================Typing Trainer=======================\n");
+            addstr("Select from the following options by pressing a number-key: \n\n");
+            addstr("(1) New user\n");
+            addstr("(2) Delete user\n");
+            addstr("(3) Load user and train\n");
+            addstr("(4) Exit\n");
+        }
+        // Add user page
+        else if(menu_page == 1)
+        {
+            if(users.size() >= 8)
+            {
+                addstr("=====================Typing Trainer=======================\n");
+                addstr("The maximum amount of users (8) is already met.\n");
+                addstr("To add another user, please delete an existing user first.\n\n");
+                addstr("(1) Go back");
+
+                getch();
+
+                menu_page = 0;
+                user_input = 0;
+                continue;
+            }
+            addstr("=====================Typing Trainer=======================\n");
+            addstr("To create a new user, first enter the new user name. To cancel, hit the 'ESC' key. \n\n");
+            addstr("Username: ");
+            std::string user_name = "";
+            while((user_input = getch()) != KEY_ENTER && user_input != KEY_ESC)
+            {
+                if(user_input == KEY_BACKSPACE)
+                {
+                    if(user_name.size() > 0)
+                        user_name.pop_back();
+                }
+                else
+                    user_name.push_back(user_input);
+            }
+            if(user_input == KEY_ESC)
+            {
+                menu_page = 0;
+                user_input = 0;
+                continue;
+            }
+            clear();
+
+            User* new_user = new User(user_name);
+            users.push_back(*new_user);
+            user_selected = new_user;
+
+            menu_page = 5;
+            user_input = 0;
+            continue;
+        }
+        // Delete user page
+        else if(menu_page == 2)
+        {
+            addstr("=====================Typing Trainer=======================\n");
+            addstr("Select the user you want to delete:\n\n");
+            int i = 0;
+            for(; i < 9 && i < users.size(); i++)
+            {
+                addstr(("(" + std::to_string(i + 1) + ") " + users.at(i).user_name + "\n").c_str());
+            }
+            addstr(("(" + std::to_string(i + 1) + ") Go back").c_str());
+
+            while((user_input = getch()) < '1' || user_input > ('1' + i))
+            {
+                getch();
+            }
+
+            // Delete the user from the array
+            if(user_input != '1' + i)
+            {
+                users.erase(users.begin() + i);
+            }
+
+            menu_page = 0;
+            user_input = 0;
+            continue;
+        }
+        // Load user page
+        else if(menu_page == 3)
+        {
+            addstr("=====================Typing Trainer=======================\n");
+            addstr("Select the user you want to load:\n\n");
+
+            int i = 0;
+            for(; i < 9 && i < users.size(); i++)
+            {
+                addstr(("(" + std::to_string(i + 1) + ") " + users.at(i).user_name + "\n").c_str());
+            }
+            addstr(("(" + std::to_string(i + 1) + ") Go back").c_str());
+
+            while((user_input = getch()) < '1' || user_input > ('1' + i))
+            {
+                getch();
+            }
+
+            // Mark the selected user as selected
+            if(user_input != '1' + i)
+            {
+                user_selected = &(users.at(i - 1));
+            }
+
+            menu_page = 4;
+            user_input = 0;
+            continue;
+        }
+        // Show typing menu for a user
+        else if(menu_page == 4)
+        {
+            addstr("=====================Typing Trainer=======================\n");
+            addstr(("Hi, " + user_selected->user_name + ", what do you want to do?\n\n").c_str());
+            addstr("(1) Show progress\n");
+            addstr("(2) Change difficulty\n");
+            addstr("(3) Clean progress\n");
+            addstr("(4) Start practicing\n");
+            addstr("(5) Go back to main menu\n");
+        }
+        // Change difficulty of user
+        else if(menu_page == 5)
+        {
+            addstr("=====================Typing Trainer=======================\n");
+            addstr(("Hi, " + user_selected->user_name + ", enter the difficulty level you want to practice at.\n\n").c_str());
+            addstr("(1) Easy, i.e. middle row key\n");
+            addstr("(2) Intermediate, i.e. middle and top row keys\n");
+            addstr("(3) Difficult, i.e. all keys\n");
+        }
+        // Show user progess
+        else if(menu_page == 6)
+        {
+            addstr("=====================Typing Trainer=======================\n");
+            addstr(("Hi, " + user_selected->user_name + ", you have the following statistics:\n\n").c_str());
+
+            addstr(("Total number of typed characters: " + std::to_string(user_selected->user_typing_stats.chars_typed) + "\n").c_str());
+            addstr(("Total time typed (in seconds): " + std::to_string(user_selected->user_typing_stats.elapsed_time_sec) + "\n").c_str());
+            addstr(("Total number of mistakes: " + std::to_string(user_selected->user_typing_stats.num_of_mistakes) + "\n").c_str());
+            addstr(("Total typing rate (chars / min): " + std::to_string(user_selected->user_typing_stats.type_rate) + "\n\n").c_str());
+
+            addstr("Press any key to go back.");
+            getch();
+
+            menu_page = 4;
+            continue;
+        }
+        // Reset statistics
+        else if(menu_page == 7)
+        {
+            user_selected->user_typing_stats.flush();
+
+            addstr("=====================Typing Trainer=======================\n");
+            addstr(("Hi, " + user_selected->user_name + ", your statistics have been reset.\n\n").c_str());
+
+            addstr("Press any key to go back.");
+            getch();
+
+            menu_page = 4;
+            continue;
+        }
+
+        user_input = getch();
+
+        if(menu_page == 0)
+        {
+            if(user_input >= '1' && user_input <= '3')
+            {
+                menu_page = user_input - '0';
+            }
+            else if(user_input == '4')
+            {
+                clear();
+                exit(0);
+            }
+            user_input = 0;
+        }
+        else if(menu_page == 4)
+        {
+            if(user_input == '1')
+            {
+                menu_page = 6;
+            }
+            else if(user_input == '2')
+            {
+                menu_page = 5;
+            }
+            else if(user_input == '3')
+            {
+                menu_page = 7;
+            }
+            else if(user_input == '5')
+            {
+                menu_page = 0;
+                user_selected = nullptr;
+            }
+        }
+        else if(menu_page == 5)
+        {
+            if(user_input >= '1' && user_input <= '3')
+            {
+                user_selected->difficulty_level = user_input - '0';
+                menu_page = 4;
+            }
+            
+        }
+    }
+
+    clear();
+    endwin();
+}
 
 /*
     The start menu will be shown to the user, right in the beginning.
@@ -337,7 +570,9 @@ typing_stats run_typing_trainer(const string sample_text)
 
 int main()
 {
-    show_start_menu();
-    typing_stats training_stats = run_typing_trainer(read_sample_text("beginner.txt"));
-    write_typing_stats(training_stats, "statistics.txt");
+    // show_start_menu();
+    // typing_stats training_stats = run_typing_trainer(read_sample_text("beginner.txt"));
+    // write_typing_stats(training_stats, "statistics.txt");
+
+    show_start_menu_sprint_2();
 }
