@@ -8,7 +8,6 @@
 #include <vector>
 #include "User.cpp"
 #include "TrainingTextGenerator.cpp"
-using namespace std;
 
 // Ncurses defines values for the enter and backspace key that
 // do not work. Thus, we redefine their values to work on Linux machines.
@@ -26,50 +25,54 @@ using namespace std;
 #define KEY_ENTER 10
 #define KEY_ESC 27
 
-// struct typing_stats
-// {
-//     int chars_typed;
-//     float elapsed_time_sec;
-//     int num_of_mistakes;
-//     float type_rate;
-// };
+std::string read_sample_text(std::string file_location);
+TypingStats run_typing_trainer(const std::string sample_text);
 
-string read_sample_text(string file_location);
-TypingStats run_typing_trainer(const string sample_text);
-
+/*
+    This array holds all users that are registered during the runtime. They will be
+    automatically saved and loaded from disk so that the program remembers them.
+*/
 std::vector<User> users;
 
+/*
+    This function writes the users to disk. We did not use a "nice" file format/-syntax
+    like XML or JSON because of time issues.
+*/
 void write_users()
 {
-    ofstream myfile;
-    myfile.open ("users.txt");
+    std::ofstream outstr;
+    outstr.open ("users.txt");
 
     for(const User & u : users)
     {
-        myfile << u << std::endl;
+        outstr << u << std::endl;
     }
 
-    myfile.close();
+    outstr.close();
 }
 
+/*
+    This functions tries to retrieve the previously saved users from disk
+    and stores them in the users-array (see above).
+*/
 void read_users()
 {
     users.erase(users.begin(), users.end());
     
-    ifstream istr("users.txt");
+    std::ifstream istr("users.txt");
 
     if(istr.is_open())
     {
-        string current_line;
-        string current_user = "";
+        std::string current_line;
+        std::string current_user = "";
 
-        while (getline(istr, current_line)) 
+        while (std::getline(istr, current_line)) 
         {
             if(current_line != "")
                 current_user += current_line + '\n';
             else if(current_user != "")
             {
-                User * new_user = user_from_string(current_user);
+                User* new_user = user_from_string(current_user);
                 users.push_back(*new_user);
 
                 current_user = "";
@@ -80,12 +83,23 @@ void read_users()
     istr.close();
 }
 
-void show_start_menu_sprint_2()
+/*
+    This function will take show a menu in the terminal with which the user can
+    create, delete and modify users, see their states and of course, run the
+    typing trainer.
+*/
+void show_program_menu()
 {
     initscr();
 
+    // A menu page represents a menu that is currently being shown.
     int menu_page = 0;
-    int user_input = 0;
+
+    // The last character the user has entered
+    char user_input = 0;
+
+    // After a user has been loaded, we reference that user through
+    // this pointer
     User* user_selected = nullptr;
     
     while(menu_page != 0 || user_input != '4')
@@ -115,7 +129,6 @@ void show_start_menu_sprint_2()
                 getch();
 
                 menu_page = 0;
-                user_input = 0;
                 continue;
             }
             addstr("=====================Typing Trainer=======================\n");
@@ -135,7 +148,6 @@ void show_start_menu_sprint_2()
             if(user_input == KEY_ESC)
             {
                 menu_page = 0;
-                user_input = 0;
                 continue;
             }
             clear();
@@ -145,7 +157,6 @@ void show_start_menu_sprint_2()
             user_selected = new_user;
 
             menu_page = 5;
-            user_input = 0;
             write_users();
             continue;
         }
@@ -166,14 +177,15 @@ void show_start_menu_sprint_2()
                 getch();
             }
 
-            // Delete the user from the array
+            // Delete the user from the array and from the heap
             if(user_input != '1' + i)
             {
+                user_selected = &users.at(user_input - '1');
                 users.erase(users.begin() + user_input - '1');
+                delete user_selected;
             }
 
             menu_page = 0;
-            user_input = 0;
             write_users();
             continue;
         }
@@ -195,15 +207,20 @@ void show_start_menu_sprint_2()
                 getch();
             }
 
-            // Mark the selected user as selected
+            // Mark the selected user as selected if not selected 'Go back'
             if(user_input != '1' + i)
             {
                 user_selected = &(users.at(user_input - '1'));
+                menu_page = 4;
+                continue;
             }
-
-            menu_page = 4;
-            user_input = 0;
-            continue;
+            // If selected 'Go back'
+            else
+            {
+                menu_page = 0;
+                continue;
+            }
+            
         }
         // Show typing menu for a user
         else if(menu_page == 4)
@@ -266,7 +283,10 @@ void show_start_menu_sprint_2()
 
             getch();
 
-            TypingStats stats = run_typing_trainer(get_sample_text(user_selected->difficulty_level, 3));
+            // Here, we start the typing trainer
+            TypingStats stats = run_typing_trainer(get_sample_text(user_selected->difficulty_level, 6));
+            // We add the typing stats from the last run to the total typing stats of the user
+            // (using operator overloading)
             user_selected->user_typing_stats = user_selected->user_typing_stats + stats;
             write_users();
 
@@ -276,6 +296,11 @@ void show_start_menu_sprint_2()
 
         user_input = getch();
 
+        /*
+            Here we react to the user input on the menu. Indeed, partially this 
+            has already happened above also but only for the "special" cases
+            where the menu was more dynamic than just plain navigation.
+        */
         if(menu_page == 0)
         {
             if(user_input >= '1' && user_input <= '3')
@@ -292,21 +317,13 @@ void show_start_menu_sprint_2()
         else if(menu_page == 4)
         {
             if(user_input == '1')
-            {
                 menu_page = 6;
-            }
             else if(user_input == '2')
-            {
                 menu_page = 5;
-            }
             else if(user_input == '3')
-            {
                 menu_page = 7;
-            }
             else if(user_input == '4')
-            {
                 menu_page = 8;
-            }
             else if(user_input == '5')
             {
                 menu_page = 0;
@@ -338,7 +355,7 @@ void show_start_menu_sprint_2()
 */
 bool is_valid_text_char(char c)
 {
-    const static array allowed_special_chars = {' ', '.', ',', '\'', 
+    const static std::array allowed_special_chars = {' ', '.', ',', '\'', 
     '!', '?', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '\\', '/', 
     '{', '[', ']', '}', '|', ':', ';', '<', '>', '~', '`'};
 
@@ -352,47 +369,9 @@ bool is_valid_text_char(char c)
 }
 
 /*
-    This function concatenates a file's content over several lines into
-    a single line and returns it as a string. It is being used to get the 
-    sample-training text from a file.
-*/
-string read_sample_text(string file_location)
-{
-    ifstream istr(file_location);
-    string current_line;
-    string file_content="";
-
-    while (getline(istr, current_line)) 
-    {
-        file_content += current_line;
-    }
-   
-    return file_content;
-}
-
-/*
-    This function saves typing statistics into a text file at
-    a specific location.
-*/
-// void write_typing_stats(typing_stats stats, string file_location)
-// {
-//     ofstream ostr;
-//     ostr.open(file_location);
-//     if(ostr.is_open())
-//     {
-//         ostr << "Typing training statistics:\n\tCharacters typed: " << stats.chars_typed
-//             << "\n\tMistakes made: " << stats.num_of_mistakes << "\n\tTime (sec.): "
-//             << stats.elapsed_time_sec << "\n\tTyping speed (characters / min.): " << stats.type_rate << endl;
-//         ostr.close();
-//     }
-//     else
-//         cout << "Could not save typing statistics in a text file due to an error." << endl;
-// }
-
-/*
     This function runs the typing trainer and displays statistics after its termination.
 */
-TypingStats run_typing_trainer(const string sample_text)
+TypingStats run_typing_trainer(const std::string sample_text)
 {
     initscr();
 
@@ -448,7 +427,7 @@ TypingStats run_typing_trainer(const string sample_text)
     char input_char;
 
     // This will hold the time_point object of the time when the user typed the first letter
-    chrono::steady_clock::time_point start_time;
+    std::chrono::steady_clock::time_point start_time;
 
     // Whether the user started typing: Used for measuring start_time (see above).
     bool user_started_typing = false;
@@ -461,7 +440,7 @@ TypingStats run_typing_trainer(const string sample_text)
     while(pos_in_sample_text < len_of_sample_text && !user_interrupted_input)
     {
         // Compute which part of the string is currently displayed in the window
-        string current_text_segment = sample_text.substr(text_segment_start, displayable_text_len);
+        std::string current_text_segment = sample_text.substr(text_segment_start, displayable_text_len);
 
         // Display the text to be shown (adding the trailing space is needed to avoid cosmetic issues)
         mvwprintw(sample_text_win, 1, 1, (current_text_segment + " ").c_str());
@@ -479,7 +458,7 @@ TypingStats run_typing_trainer(const string sample_text)
             if(!user_started_typing)
             {
                 user_started_typing = true;
-                start_time = chrono::steady_clock::now();
+                start_time = std::chrono::steady_clock::now();
             }
 
             // Input was incorrect: Display a red box around the wrongly input character
@@ -491,7 +470,7 @@ TypingStats run_typing_trainer(const string sample_text)
                 wattroff(input_text_win,COLOR_PAIR(2));
                 wrefresh(input_text_win);
                 num_of_typing_errors++;
-                mvwprintw(statistic_info_win, 1, 1, ("Error Count: " + to_string(num_of_typing_errors)).c_str());
+                mvwprintw(statistic_info_win, 1, 1, ("Error Count: " + std::to_string(num_of_typing_errors)).c_str());
                 wrefresh(statistic_info_win);
             }
             else if(input_char == KEY_ENTER)
@@ -527,8 +506,10 @@ TypingStats run_typing_trainer(const string sample_text)
         if(!user_started_typing)
         {
             user_started_typing = true;
-            start_time = chrono::steady_clock::now();
-        }
+            start_time = std::chrono::steady_clock::now();
+        }// show_start_menu();
+    // typing_stats training_stats = run_typing_trainer(read_sample_text("beginner.txt"));
+    // write_typing_stats(training_stats, "statistics.txt");
 
         // This is a cosmetic fix that is needed
         mvwaddch(input_text_win, 1, pos_in_sample_text - text_segment_start + 1, ' '); 
@@ -555,15 +536,15 @@ TypingStats run_typing_trainer(const string sample_text)
     }
 
     //calculate the user time depending on start and end time
-    auto end_time = chrono::steady_clock::now();
-    auto elapsed_time = int(chrono::duration_cast<chrono::seconds>(end_time - start_time).count());
+    auto end_time = std::chrono::steady_clock::now();
+    auto elapsed_time = int(std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time).count());
     float chars_per_minute;
     if(elapsed_time > 0)
         chars_per_minute = pos_in_sample_text / elapsed_time * 60.;
     else
         chars_per_minute = 0;
-    mvwprintw(statistic_info_win, 1, 20, ("Elapsed time: " + to_string(elapsed_time) + "sec.").c_str());
-    mvwprintw(statistic_info_win, 1, 44, ("Characters / min.: " + to_string(chars_per_minute)).c_str());
+    mvwprintw(statistic_info_win, 1, 20, ("Elapsed time: " + std::to_string(elapsed_time) + "sec.").c_str());
+    mvwprintw(statistic_info_win, 1, 44, ("Characters / min.: " + std::to_string(chars_per_minute)).c_str());
     mvwprintw(statistic_info_win, 1, window_length - 23, "Press 'Enter' to exit");
     wrefresh(statistic_info_win);
     while(getch() != '\n');
@@ -582,11 +563,7 @@ TypingStats run_typing_trainer(const string sample_text)
 
 int main()
 {
-    // show_start_menu();
-    // typing_stats training_stats = run_typing_trainer(read_sample_text("beginner.txt"));
-    // write_typing_stats(training_stats, "statistics.txt");
-
     read_sample_words_from_files();
     read_users();
-    show_start_menu_sprint_2();
+    show_program_menu();
 }

@@ -3,6 +3,11 @@
 
 #define STATS_STR_HEADER "TYPING_STATS:\n"
 
+/*
+    This class encapsulates basic typing statistics. The class also supports
+    storing its values into a stream (or stream actually) to be later reconstructed
+    from that stream. This is used for retrieving user information from disk.
+*/
 class TypingStats
 {
     public:
@@ -11,19 +16,19 @@ class TypingStats
         int num_of_mistakes = 0;
         float type_rate = 0;
 
-        friend std::ostream & operator<< (std::ostream & st, const TypingStats & stats);
-
         TypingStats operator+(const TypingStats & other_stats)
         {
             TypingStats new_stats;
             new_stats.chars_typed = other_stats.chars_typed + chars_typed;
-            new_stats.elapsed_time_sec = other_stats.num_of_mistakes + elapsed_time_sec;
+            new_stats.elapsed_time_sec = other_stats.elapsed_time_sec + elapsed_time_sec;
             new_stats.num_of_mistakes = other_stats.num_of_mistakes + num_of_mistakes;
             new_stats.type_rate = new_stats.chars_typed / new_stats.elapsed_time_sec * 60.;
 
             return new_stats;
         }
 
+        // Resets all the values to a default state. It's being called
+        // when we reset the statistics for a user.
         void flush()
         {
             chars_typed = 0;

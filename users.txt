@@ -1,0 +1,10 @@
+USER:
+Freddy
+1
+TYPING_STATS:
+90
+13
+1
+415.385
+
+

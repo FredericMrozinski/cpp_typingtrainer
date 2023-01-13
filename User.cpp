@@ -5,6 +5,11 @@
 
 #define USER_STR_HEADER "USER:\n"
 
+/*
+    This class encapsulates basic information about the user. The class also supports
+    storing its values into a stream (or stream actually) to be later reconstructed
+    from that stream. This is used for retrieving user information from disk.
+*/
 class User 
 {
     public:
@@ -30,7 +35,6 @@ class User
                 return *this;
         }
 
-        friend std::ostream & operator<< (std::ostream & st, const User & user);
 };
 
 std::ostream & operator<< (std::ostream & st, const User & user)
