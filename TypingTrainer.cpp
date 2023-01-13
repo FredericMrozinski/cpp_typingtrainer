@@ -7,7 +7,7 @@
 #include <memory>
 #include <vector>
 #include "User.cpp"
-#include "GrammaticalStructure.cpp"
+#include "TrainingTextGenerator.cpp"
 using namespace std;
 
 // Ncurses defines values for the enter and backspace key that
@@ -57,21 +57,27 @@ void read_users()
     users.erase(users.begin(), users.end());
     
     ifstream istr("users.txt");
-    string current_line;
-    string current_user = "";
 
-    while (getline(istr, current_line)) 
+    if(istr.is_open())
     {
-        if(current_line != "")
-            current_user += current_line + '\n';
-        else if(current_user != "")
-        {
-            User * new_user = user_from_string(current_user);
-            users.push_back(*new_user);
+        string current_line;
+        string current_user = "";
 
-            current_user = "";
+        while (getline(istr, current_line)) 
+        {
+            if(current_line != "")
+                current_user += current_line + '\n';
+            else if(current_user != "")
+            {
+                User * new_user = user_from_string(current_user);
+                users.push_back(*new_user);
+
+                current_user = "";
+            }
         }
     }
+
+    istr.close();
 }
 
 void show_start_menu_sprint_2()
@@ -260,7 +266,7 @@ void show_start_menu_sprint_2()
 
             getch();
 
-            TypingStats stats = run_typing_trainer(get_sample_text(user_selected->difficulty_level, 10));
+            TypingStats stats = run_typing_trainer(get_sample_text(user_selected->difficulty_level, 3));
             user_selected->user_typing_stats = user_selected->user_typing_stats + stats;
             write_users();
 
