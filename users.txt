@@ -1,11 +1,11 @@
 USER:
 Freddy
-1
+3
 TYPING_STATS:
-421
+17
 0
-12
 0
+inf
 
 
 USER:
@@ -20,7 +20,7 @@ TYPING_STATS:
 
 USER:
 Quteiba
-2
+1
 TYPING_STATS:
 0
 0

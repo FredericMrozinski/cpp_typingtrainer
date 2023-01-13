@@ -7,6 +7,7 @@
 #include <memory>
 #include <vector>
 #include "User.cpp"
+#include "GrammaticalStructure.cpp"
 using namespace std;
 
 // Ncurses defines values for the enter and backspace key that
@@ -259,7 +260,7 @@ void show_start_menu_sprint_2()
 
             getch();
 
-            TypingStats stats = run_typing_trainer(read_sample_text("beginner.txt"));
+            TypingStats stats = run_typing_trainer(get_sample_text(user_selected->difficulty_level, 10));
             user_selected->user_typing_stats = user_selected->user_typing_stats + stats;
             write_users();
 
@@ -317,64 +318,6 @@ void show_start_menu_sprint_2()
             }
             
         }
-    }
-
-    clear();
-    endwin();
-}
-
-/*
-    The start menu will be shown to the user, right in the beginning.
-    It gives the user the ability to read through a short tutorial.
-*/
-void show_start_menu()
-{
-    initscr();
-
-    addstr("==========================================================\n");
-    addstr("|                                                        |\n");
-    addstr("|              Welcome to Typing Trainer!                |\n");
-    addstr("|               Press any key to continue.               |\n");
-    addstr("|                                                        |\n");
-    addstr("==========================================================\n");
-
-    getch();
-
-    clear();
-    addstr("==========================================================\n");
-    addstr("|                                                        |\n");
-    addstr("|         Do you want to read a short how-to?            |\n");
-    addstr("| Press 'y' for a tutorial, and 'n' to start right away. |\n");
-    addstr("|                                                        |\n");
-    addstr("==========================================================\n");
-
-    char input_char{};
-    while((input_char = getch()) != 'y' && input_char != 'n');
-
-    if(input_char == 'y')
-    {
-        clear();
-        addstr("==========================================================\n");
-        addstr("|                                                        |\n");
-        addstr("| Once you start the program, a text will be displayed   |\n");
-        addstr("| at the top of your screen. You will have to input that |\n");
-        addstr("| text on your keyboard. The text typing will end auto-  |\n");
-        addstr("| matically once you typed the whole text. You may also  |\n");
-        addstr("| terminate the trainer by hitting the enter key at any  |\n");
-        addstr("| point during the training. After having finished,      |\n");
-        addstr("| you can see statistics evaluating your performance. If |\n");
-        addstr("| you happen to make a typo, you will see a red marker.  |\n");
-        addstr("| To correct this typo, you may either use backspace or  |\n");
-        addstr("| simply keep typing. The wrong character will be rep-   |\n");
-        addstr("| laced by the correct character, as soon as you type    |\n");
-        addstr("| the correct character.                                 |\n");
-        addstr("|                                                        |\n");
-        addstr("| To start typing, press any character. The time tracker |\n");
-        addstr("| won't start until you type.                            |\n");
-        addstr("|                                                        |\n");
-        addstr("==========================================================\n");
-
-        getch();
     }
 
     clear();
@@ -637,6 +580,7 @@ int main()
     // typing_stats training_stats = run_typing_trainer(read_sample_text("beginner.txt"));
     // write_typing_stats(training_stats, "statistics.txt");
 
+    read_sample_words_from_files();
     read_users();
     show_start_menu_sprint_2();
 }
