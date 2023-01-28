@@ -1,0 +1,9 @@
+Delete statistics after difficulty change
+Remove old user/stats to string methods
+Implement training abort
+
+Optimization:
+Used stl functionality in TypingStats
+Elaborate on the overhead arrays in TypingStats: Those which only hold information that could fully be derived from the top 3 arrays in the class.
+    However, we still decide to use those to accelerate compution. Similarly, we also export them into the JSON to be less error prone in 
+    the code and because hard disk drive is neither limited nor has any cost of use.

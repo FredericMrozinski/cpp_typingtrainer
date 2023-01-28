@@ -1,5 +1,22 @@
 # Typing-Trainer
 
+# Installation and required libaries
+## NCurses
+
+
+## nlohmann-JSON
+
+nlohmann-JSON is a C++ JSON parser library that we use in this program. In order to run the Typing Trainer, make sure to install the library, e.g. by:
+
+### For apt-package managers (Ubuntu, Debian, etc) run:
+
+    sudo apt-get install nlohmann-json3-dev
+
+### For yum-package managers (Fedora) run:
+
+    sudo yum install json-devel
+
+
 
 # typingTrainer  ✌️
 
