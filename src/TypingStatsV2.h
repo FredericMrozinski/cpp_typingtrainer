@@ -51,6 +51,8 @@ class TypingStats
 
         int get_num_of_errors() const;
 
+        int get_num_of_correct_chars() const;
+
         // including errors
         int get_num_of_typed_chars() const;
 

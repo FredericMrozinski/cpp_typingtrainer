@@ -89,7 +89,7 @@ bool TypingTrainerSession::char_typed(char c)
 
 void TypingTrainerSession::end_training()
 {
-    current_user->user_typing_stats += *get_training_stats();
+    *(current_user->user_typing_stats) += *get_training_stats();
     _training_text = "";
     _pos_in_training_text = 0;
     current_user = nullptr;
@@ -117,5 +117,5 @@ int TypingTrainerSession::pos_in_training_text()
 
 void TypingTrainerSession::abort_typing_training()
 {
-    throw std::runtime_error("Abort typing not yet implemented");
+    end_training();
 }

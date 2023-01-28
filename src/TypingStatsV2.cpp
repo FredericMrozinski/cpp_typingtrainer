@@ -141,6 +141,18 @@ void TypingStats::flush()
     typings_per_finger.clear();
     errors_per_row.clear();
     errors_per_finger.clear();
+
+    for(int i = 0; i < 9; i++)
+        errors_per_finger[i] = 0;
+
+    for(int i = 0; i < 5; i++)
+        errors_per_row[i] = 0;
+
+    for(int i = 0; i < 9; i++)
+        typings_per_finger[i] = 0;
+
+    for(int i = 0; i < 5; i++)
+        typings_per_row[i] = 0;
 }
 
 long TypingStats::get_total_elapsed_time_ms() const
@@ -174,6 +186,11 @@ int TypingStats::get_num_of_typed_chars() const
     return total_num_correctly_typed_chars + total_num_wrongly_typed_chars;
 }
 
+int TypingStats::get_num_of_correct_chars() const
+{
+    return total_num_correctly_typed_chars;
+}
+
 std::unique_ptr<std::map<int, float>> TypingStats::get_errors_per_finger(bool relative_error) const
 {
     std::unique_ptr<std::map<int, float>> to_return = std::make_unique<std::map<int, float>>();
@@ -181,7 +198,13 @@ std::unique_ptr<std::map<int, float>> TypingStats::get_errors_per_finger(bool re
     for(const auto& [key, val] : errors_per_finger)
     {
         if(relative_error)
-            (*to_return)[key] = (float) errors_per_finger.at(key) / typings_per_finger.at(key);
+        {
+            // To avoid division by 0
+            if(errors_per_finger.at(key) == 0)
+                (*to_return)[key] = 0;
+            else
+                (*to_return)[key] = (float) errors_per_finger.at(key) / typings_per_finger.at(key);
+        }
         else
             (*to_return)[key] = errors_per_finger.at(key);
     }
@@ -196,7 +219,13 @@ std::unique_ptr<std::map<int, float>> TypingStats::get_errors_per_row(bool relat
     for(const auto& [key, val] : errors_per_row)
     {
         if(relative_error)
-            (*to_return)[key] = (float) errors_per_row.at(key) / typings_per_row.at(key);
+        {
+            // To avoid division by 0
+            if(errors_per_row.at(key) == 0)
+                (*to_return)[key] = 0;
+            else
+                (*to_return)[key] = (float) errors_per_row.at(key) / typings_per_row.at(key);
+        }
         else
             (*to_return)[key] = errors_per_row.at(key);
     }

@@ -16,7 +16,7 @@ class User
 {
     public:
         const std::string user_name;
-        TypingStats user_typing_stats;
+        std::shared_ptr<TypingStats> user_typing_stats;
         int difficulty_level;
 
         User(std::string user_name);
@@ -36,9 +36,5 @@ class User
         nlohmann::json to_json() const;
 
 };
-
-std::ostream & operator<< (std::ostream & st, const User & user);
-
-User* user_from_string(const std::string & user_str);
 
 #endif

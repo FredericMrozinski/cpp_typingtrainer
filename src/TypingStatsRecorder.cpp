@@ -35,7 +35,7 @@ void TypingStatsRecorder::record_char_typed(char typed, char expected)
     long time_since_last_event_ms = std::chrono::duration_cast<std::chrono::milliseconds>
         (current_event_ms - last_event_ms).count();
 
-    session_stats->add_char_pair_typed(last_typed_char, typed, time_since_last_event_ms); 
+    session_stats->add_char_pair_typed(last_typed_char, expected, time_since_last_event_ms); 
     if(typed == expected)
         session_stats->add_correctly_typed(typed);
     else

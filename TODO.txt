@@ -1,6 +1,4 @@
-Delete statistics after difficulty change
-Remove old user/stats to string methods
-Implement training abort
+Remove binaries from src folder
 
 Optimization:
 Used stl functionality in TypingStats

@@ -24,6 +24,10 @@ void TypingTrainerUI::show_program_menu()
     // After a user has been loaded, we reference that user through
     // this pointer
     User* user_selected = nullptr;
+
+    // Indicates whether the "show-statistics" section will show the statistics
+    // of all prev runs or just of the previous run
+    bool show_stats_of_last_run = false;
     
     while(menu_page != 0 || user_input != '4')
     {
@@ -161,6 +165,22 @@ void TypingTrainerUI::show_program_menu()
         else if(menu_page == 5)
         {
             addstr("=====================Typing Trainer=======================\n");
+            addstr(("Hi, " + user_selected->user_name + ", changing the difficulty level causes all recorded statistics\n"
+                "of yours to be deleted.\n(1) Proceed   (9) Go back\n\n").c_str());
+
+            while((user_input = getch()) != '1' && user_input != '9');
+
+            if(user_input == '9')
+            {
+                menu_page = 4;
+                continue;
+            }
+
+            clear();
+
+            user_selected->user_typing_stats->flush();
+
+            addstr("=====================Typing Trainer=======================\n");
             addstr(("Hi, " + user_selected->user_name + ", enter the difficulty level you want to practice at.\n\n").c_str());
             addstr("(1) Easy, i.e. middle row key\n");
             addstr("(2) Intermediate, i.e. middle and top row keys\n");
@@ -174,6 +194,12 @@ void TypingTrainerUI::show_program_menu()
             bool use_relative_units = false;
             user_input = 0;
 
+            std::shared_ptr<TypingStats> stats_to_show;
+            if(show_stats_of_last_run)
+                stats_to_show = typing_trainer_session->get_training_stats();
+            else
+                stats_to_show = user_selected->user_typing_stats;
+
             do
             {
                 if(user_input == '1')
@@ -185,7 +211,10 @@ void TypingTrainerUI::show_program_menu()
 
                 clear();
                 addstr("=====================Typing Trainer=======================\n");
-                addstr(("Hi, " + user_selected->user_name + ", you have the following statistics:\n").c_str());
+                if(show_stats_of_last_run)
+                    addstr("These are your typing statistics from the previous training session:\n");
+                else
+                    addstr(("Hi, " + user_selected->user_name + ", here are your overall statistics:\n").c_str());
                 addstr("(1) <<   (2) >>   (3) abs/rel   (9) go to menu\n\n");
 
                 switch (stats_page)
@@ -193,13 +222,15 @@ void TypingTrainerUI::show_program_menu()
                 // Simple overview
                 case 0:
                     addstr("Summarization:\n");
+                    addstr(("Difficulty level: " + std::to_string(user_selected->difficulty_level) + "\n").c_str());
                     addstr(("Total number of typed characters: " 
-                        + std::to_string(user_selected->user_typing_stats.get_num_of_typed_chars()) + "\n").c_str());
+                        + std::to_string(stats_to_show->get_num_of_typed_chars()) + "\n").c_str());
                     addstr(("Total time typed (in seconds): " 
-                        + std::to_string(user_selected->user_typing_stats.get_total_elapsed_time_ms() / 1000) + "\n").c_str());
+                        + std::to_string(stats_to_show->get_total_elapsed_time_ms() / 1000) + "\n").c_str());
                     addstr(("Total number of mistakes: " 
-                        + std::to_string(user_selected->user_typing_stats.get_num_of_errors()) + "\n").c_str());
-                    //addstr(("Total typing rate (chars / min): " + std::to_string(user_selected->user_typing_stats.get) + "\n\n").c_str());
+                        + std::to_string(stats_to_show->get_num_of_errors()) + "\n").c_str());
+                    addstr(("Total typing rate (chars / min): " + float_to_prec((float) stats_to_show->get_num_of_typed_chars()
+                        / (float) stats_to_show->get_total_elapsed_time_ms() * 6e4, 2) + "\n\n").c_str());
 
                     break;
 
@@ -207,7 +238,7 @@ void TypingTrainerUI::show_program_menu()
                 case 1:
                     {
                         std::unique_ptr<std::map<int, float>> err_per_finger 
-                            = user_selected->user_typing_stats.get_errors_per_finger(use_relative_units);
+                            = stats_to_show->get_errors_per_finger(use_relative_units);
                         addstr("Errors for each finger:\n");
                         addstr(("Left index:  " + float_to_prec(err_per_finger->at(0), 2) 
                             + "\t\tRight index:  " + float_to_prec(err_per_finger->at(1), 2) + "\n").c_str());
@@ -226,7 +257,7 @@ void TypingTrainerUI::show_program_menu()
                 case 2:
                     {
                         std::unique_ptr<std::map<int, float>> err_per_row 
-                            = user_selected->user_typing_stats.get_errors_per_row(use_relative_units);
+                            = stats_to_show->get_errors_per_row(use_relative_units);
                         addstr("Errors for each row:\n");
                         addstr(("123...890: " + float_to_prec(err_per_row->at(0), 2) + "\n").c_str());
                         addstr(("QWE...IOP: " + float_to_prec(err_per_row->at(1), 2) + "\n").c_str());
@@ -241,7 +272,7 @@ void TypingTrainerUI::show_program_menu()
                 case 3:
                     {
                         std::unique_ptr<std::vector<std::pair<char, float>>> errors_sorted 
-                            = user_selected->user_typing_stats.get_errors_for_char_sorted(use_relative_units);
+                            = stats_to_show->get_errors_for_char_sorted(use_relative_units);
                         addstr("Top 5 most problematic characters:\n");
                         for(int i = 0; i < 5; i++)
                         {
@@ -264,7 +295,7 @@ void TypingTrainerUI::show_program_menu()
                 case 4:
                     {
                         std::unique_ptr<std::vector<std::tuple<char, char, float>>> letter_combinations 
-                            = user_selected->user_typing_stats.get_duration_for_letter_combinations_sorted();
+                            = stats_to_show->get_duration_for_letter_combinations_sorted();
                         addstr("Top 5 slowest letter combination average time:\n");
                         for(int i = 0; i < 5; i++)
                         {
@@ -289,13 +320,15 @@ void TypingTrainerUI::show_program_menu()
             }
             while((user_input = getch()) != '9');
 
+            show_stats_of_last_run = false;
+
             menu_page = 4;
             continue;
         }
         // Reset statistics
         else if(menu_page == 7)
         {
-            user_selected->user_typing_stats.flush();
+            user_selected->user_typing_stats->flush();
 
             addstr("=====================Typing Trainer=======================\n");
             addstr(("Hi, " + user_selected->user_name + ", your statistics have been reset.\n\n").c_str());
@@ -320,6 +353,8 @@ void TypingTrainerUI::show_program_menu()
             // Here, we start the typing trainer
             typing_trainer_session->run_typing_trainer(user_selected);
             run_typing_trainer_session();
+
+            show_stats_of_last_run = true;
             
             // After the typing training, we want to write the user
             // statistics to disk.
