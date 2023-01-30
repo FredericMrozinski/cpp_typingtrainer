@@ -21,6 +21,12 @@ User::User(nlohmann::json j) : user_name(j["user_name"])
     user_typing_stats = std::make_shared<TypingStats>(j["typing_stats"]);
 }
 
+void User::set_difficulty(int d)
+{
+    user_typing_stats->flush();
+    difficulty_level = d;
+}
+
 nlohmann::json User::to_json() const
 {
     nlohmann::json j;
@@ -29,4 +35,9 @@ nlohmann::json User::to_json() const
     j["typing_stats"] = user_typing_stats->to_json();
     
     return j;
+}
+
+int User::get_difficulty() const
+{
+    return difficulty_level;
 }

@@ -1,3 +1,14 @@
+/*************************************************
+
+TypingStatsV2.cpp
+Authors: Frederic Mrozinski, Quteiba Alsalaa
+Date: Jan 26, 2023
+
+For detailed documentation, please refer to
+TypingStatsV2.h.
+
+**************************************************/
+
 #include "TypingStatsV2.h"
 #include "utils.h"
 
@@ -298,14 +309,4 @@ json TypingStats::to_json() const
     j["typings_per_finger"] = typings_per_finger;
 
     return j;
-}
-
-std::ostream & operator<< (std::ostream & st, const TypingStats & stats)
-{
-    return st << "Generic statistics" << std::endl;
-}
-
-TypingStats stats_from_string(const std::string & stat_str)
-{
-    return TypingStats();
 }

@@ -8,7 +8,6 @@ std::unique_ptr<TypingTrainerSession> typing_trainer_session;
 void TypingTrainerUI::init()
 {
     TypingTrainerSession::init();
-    TypingTrainerSession::read_users();
 }
 
 void TypingTrainerUI::show_program_menu()
@@ -222,7 +221,7 @@ void TypingTrainerUI::show_program_menu()
                 // Simple overview
                 case 0:
                     addstr("Summarization:\n");
-                    addstr(("Difficulty level: " + std::to_string(user_selected->difficulty_level) + "\n").c_str());
+                    addstr(("Difficulty level: " + std::to_string(user_selected->get_difficulty()) + "\n").c_str());
                     addstr(("Total number of typed characters: " 
                         + std::to_string(stats_to_show->get_num_of_typed_chars()) + "\n").c_str());
                     addstr(("Total time typed (in seconds): " 
@@ -405,7 +404,7 @@ void TypingTrainerUI::show_program_menu()
         {
             if(user_input >= '1' && user_input <= '3')
             {
-                user_selected->difficulty_level = user_input - '0';
+                user_selected->set_difficulty(user_input - '0');
                 menu_page = 4;
                 TypingTrainerSession::write_users();
 

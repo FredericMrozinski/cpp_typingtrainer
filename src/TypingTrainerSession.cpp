@@ -1,3 +1,14 @@
+/*************************************************
+
+TypingTrainerSession.cpp
+Authors: Frederic Mrozinski, Quteiba Alsalaa
+Date: Jan 26, 2023
+
+For detailed documentation, please refer to
+TypingTrainerSession.h.
+
+**************************************************/
+
 #include <string>
 #include <fstream>
 #include "TypingTrainerSession.h"
@@ -11,6 +22,7 @@ std::shared_ptr<std::vector<User>> TypingTrainerSession::users_vec
 void TypingTrainerSession::init()
 {
     TrainingTextGenerator::read_sample_words_from_files();
+    read_users();
 }
 
 void TypingTrainerSession::read_users()
@@ -64,7 +76,7 @@ void TypingTrainerSession::run_typing_trainer(User* user)
     stats_recorder = std::make_unique<TypingStatsRecorder>();
     stats_recorder->begin_stats_recording();
 
-    _training_text = TrainingTextGenerator::get_sample_text(user->difficulty_level, 10);
+    _training_text = TrainingTextGenerator::get_sample_text(user->get_difficulty(), 10);
 
     _pos_in_training_text = 0;
 }

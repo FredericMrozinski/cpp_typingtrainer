@@ -42,16 +42,37 @@ that separates GUI from TypingTrainer logic, fully.
 namespace TypingTrainerUI
 {
     /*
-    This function triggers the necessary calls to read
-    the program state from disk (users, statistics, etc)
+        This function triggers the necessary calls to read
+        the program state from disk (users, statistics, etc)
     */
     void init();
 
     /*
-        This function shows the main menu
+        This function shows the main menu of this GUI
+        implementation. From there, run_typing_trainer_session()
+        will be called.
+
+        SEE ALSO:
+            init()
+
+        EXAMPLE:
+            The GUI can fully be run with the following two calls:
+
+            // ---------------------------------------------
+            init();
+            show_program_menu();
+            // ---------------------------------------------
     */
     void show_program_menu();
 
+    /*
+        Starts a typing training session. This method will be called
+        from show_program_menu and does not need to be called from
+        elsewhere.
+
+        SEE ALSO:
+            show_program_menu()
+    */
     void run_typing_trainer_session();
 }
 

@@ -1,3 +1,14 @@
+/*************************************************
+
+TrainingTextGenerator.cpp
+Authors: Frederic Mrozinski, Quteiba Alsalaa
+Date: Jan 26, 2023
+
+For functionality documentation, refer to
+TrainingTextGenerator.h
+
+**************************************************/
+
 #include <iostream>
 #include <filesystem>
 #include <fstream>
@@ -6,22 +17,6 @@
 #include <exception>
 
 #include "TrainingTextGenerator.h"
-
-/*
-
-    This file takes care of generating a simple sample text for three different
-    levels of difficulty (1 - easy, 2 - intermediate, 3 - advanced). It generates
-    sentences from words specified across several files. The sentences take the general
-    form of Subject-Verb-Object and are randomly sampled. 
-
-    The idea of using multiple files for storing the words is indeed not ideal - instead,
-    a more complex syntax should be used to only use one file (e.g. JSON). However,
-    for time reasons, we were not able to work this out that way.
-
-    Note that our sample word choice is to be improved - especially for easy sentences. It
-    would be far fetched to regard those as 'meaningful' sentences. Better go looking for those
-    in the advanced level ;)
-*/
 
 
 const std::string SAMPLE_TEXTS_PATH = "../res/sample_texts/";
