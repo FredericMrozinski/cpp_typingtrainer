@@ -305,4 +305,5 @@ CMakeFiles/TypingTrainer.dir/TypingTrainerSession.cpp.o: \
  /usr/include/c++/12.1.0/any \
  /home/frederic/Documents/Universität/Advanced\ Programming/Typing\ Trainer/typing-trainer/src/TypingStatsRecorder.h \
  /usr/include/c++/12.1.0/chrono \
- /home/frederic/Documents/Universität/Advanced\ Programming/Typing\ Trainer/typing-trainer/src/TrainingTextGenerator.h
+ /home/frederic/Documents/Universität/Advanced\ Programming/Typing\ Trainer/typing-trainer/src/TrainingTextGenerator.h \
+ /home/frederic/Documents/Universität/Advanced\ Programming/Typing\ Trainer/typing-trainer/src/utils.h

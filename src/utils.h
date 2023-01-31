@@ -3,6 +3,8 @@
 
 #include <string>
 
+void init_utils();
+
 /*
     Returns the finger id for a certain key pressed.
     Finger id: Left hand: 1 (thumb) - 5 (pinky), Right Hand: 6 (thumb) - 10 (pinky)

@@ -27,6 +27,10 @@ void TypingTrainerUI::show_program_menu()
     // Indicates whether the "show-statistics" section will show the statistics
     // of all prev runs or just of the previous run
     bool show_stats_of_last_run = false;
+
+    // We do not want to warn the user that TypingStats will be deleted
+    // when they first set their difficulty.
+    bool first_set_of_difficulty = false;
     
     while(menu_page != 0 || user_input != '4')
     {
@@ -81,6 +85,8 @@ void TypingTrainerUI::show_program_menu()
             User* new_user = new User(user_name);
             TypingTrainerSession::users()->push_back(*new_user);
             user_selected = new_user;
+
+            first_set_of_difficulty = true;
 
             menu_page = 5;
             TypingTrainerSession::write_users();
@@ -163,21 +169,24 @@ void TypingTrainerUI::show_program_menu()
         // Change difficulty of user
         else if(menu_page == 5)
         {
-            addstr("=====================Typing Trainer=======================\n");
-            addstr(("Hi, " + user_selected->user_name + ", changing the difficulty level causes all recorded statistics\n"
-                "of yours to be deleted.\n(1) Proceed   (9) Go back\n\n").c_str());
-
-            while((user_input = getch()) != '1' && user_input != '9');
-
-            if(user_input == '9')
+            if(!first_set_of_difficulty)
             {
-                menu_page = 4;
-                continue;
+                addstr("=====================Typing Trainer=======================\n");
+                addstr(("Hi, " + user_selected->user_name + ", changing the difficulty level causes all recorded statistics\n"
+                    "of yours to be deleted.\n(1) Proceed   (9) Go back\n\n").c_str());
+
+                while((user_input = getch()) != '1' && user_input != '9');
+
+                if(user_input == '9')
+                {
+                    menu_page = 4;
+                    continue;
+                }
+
+                clear();
             }
-
-            clear();
-
-            user_selected->user_typing_stats->flush();
+            else
+                first_set_of_difficulty = false;
 
             addstr("=====================Typing Trainer=======================\n");
             addstr(("Hi, " + user_selected->user_name + ", enter the difficulty level you want to practice at.\n\n").c_str());
@@ -239,15 +248,15 @@ void TypingTrainerUI::show_program_menu()
                         std::unique_ptr<std::map<int, float>> err_per_finger 
                             = stats_to_show->get_errors_per_finger(use_relative_units);
                         addstr("Errors for each finger:\n");
-                        addstr(("Left index:  " + float_to_prec(err_per_finger->at(0), 2) 
-                            + "\t\tRight index:  " + float_to_prec(err_per_finger->at(1), 2) + "\n").c_str());
-                        addstr(("Left middle: " + float_to_prec(err_per_finger->at(2), 2) 
-                            + "\t\tRight middle: " + float_to_prec(err_per_finger->at(3), 2) + "\n").c_str());
-                        addstr(("Left ring:   " + float_to_prec(err_per_finger->at(4), 2) 
-                            + "\t\tRight ring:   " + float_to_prec(err_per_finger->at(5), 2) + "\n").c_str());
-                        addstr(("Left pinky:  " + float_to_prec(err_per_finger->at(6), 2) 
-                            + "\t\tRight pinky:  " + float_to_prec(err_per_finger->at(7), 2) + "\n").c_str());
-                        addstr(("Thumb: " + float_to_prec(err_per_finger->at(8), 2)+ "\n").c_str());
+                        addstr(("Left index:  " + float_to_prec(err_per_finger->at(4), 2) 
+                            + "\t\tRight index:  " + float_to_prec(err_per_finger->at(7), 2) + "\n").c_str());
+                        addstr(("Left middle: " + float_to_prec(err_per_finger->at(3), 2) 
+                            + "\t\tRight middle: " + float_to_prec(err_per_finger->at(8), 2) + "\n").c_str());
+                        addstr(("Left ring:   " + float_to_prec(err_per_finger->at(2), 2) 
+                            + "\t\tRight ring:   " + float_to_prec(err_per_finger->at(9), 2) + "\n").c_str());
+                        addstr(("Left pinky:  " + float_to_prec(err_per_finger->at(1), 2) 
+                            + "\t\tRight pinky:  " + float_to_prec(err_per_finger->at(10), 2) + "\n").c_str());
+                        addstr(("Thumb: " + float_to_prec(err_per_finger->at(5), 2)+ "\n").c_str());
                     }
                         
                     break;
@@ -258,11 +267,11 @@ void TypingTrainerUI::show_program_menu()
                         std::unique_ptr<std::map<int, float>> err_per_row 
                             = stats_to_show->get_errors_per_row(use_relative_units);
                         addstr("Errors for each row:\n");
-                        addstr(("123...890: " + float_to_prec(err_per_row->at(0), 2) + "\n").c_str());
-                        addstr(("QWE...IOP: " + float_to_prec(err_per_row->at(1), 2) + "\n").c_str());
-                        addstr(("ASD...JKL: " + float_to_prec(err_per_row->at(2), 2) + "\n").c_str());
-                        addstr(("ZXC...M,.: " + float_to_prec(err_per_row->at(3), 2) + "\n").c_str());
-                        addstr(("Space    : " + float_to_prec(err_per_row->at(4), 2) + "\n").c_str());
+                        addstr(("123...890: " + float_to_prec(err_per_row->at(1), 2) + "\n").c_str());
+                        addstr(("QWE...IOP: " + float_to_prec(err_per_row->at(2), 2) + "\n").c_str());
+                        addstr(("ASD...JKL: " + float_to_prec(err_per_row->at(3), 2) + "\n").c_str());
+                        addstr(("ZXC...M,.: " + float_to_prec(err_per_row->at(4), 2) + "\n").c_str());
+                        addstr(("Space    : " + float_to_prec(err_per_row->at(5), 2) + "\n").c_str());
                     }
                         
                     break;

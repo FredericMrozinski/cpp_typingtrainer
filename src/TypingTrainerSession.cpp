@@ -15,6 +15,7 @@ TypingTrainerSession.h.
 #include "TypingStatsRecorder.h"
 #include "TrainingTextGenerator.h"
 #include "nlohmann/json.hpp"
+#include "utils.h"
 
 std::shared_ptr<std::vector<User>> TypingTrainerSession::users_vec 
     = std::make_shared<std::vector<User>>();
@@ -23,6 +24,7 @@ void TypingTrainerSession::init()
 {
     TrainingTextGenerator::read_sample_words_from_files();
     read_users();
+    init_utils();
 }
 
 void TypingTrainerSession::read_users()
@@ -34,14 +36,19 @@ void TypingTrainerSession::read_users()
 
     if(istr.is_open())
     {
-        nlohmann::json j;
-        istr >> j;
-
-        for(const auto& json_u : j)
+        try
         {
-            User u = User(json_u);
-            users_vec->push_back(u);
+            nlohmann::json j;
+            istr >> j;
+
+            for(const auto& json_u : j)
+            {
+                User u = User(json_u);
+                users_vec->push_back(u);
+            }
+
         }
+        catch(const std::exception& e) {}
     }
 
     istr.close();

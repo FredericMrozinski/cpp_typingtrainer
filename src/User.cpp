@@ -6,7 +6,7 @@
 User::User(std::string user_name) : user_name(user_name)
 {
     difficulty_level = 1;
-
+    user_typing_stats = std::make_shared<TypingStats>(); 
 }
 
 User::User(const User & another_user) : user_name(another_user.user_name)

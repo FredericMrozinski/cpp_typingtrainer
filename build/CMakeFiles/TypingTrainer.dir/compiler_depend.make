@@ -1313,7 +1313,8 @@ CMakeFiles/TypingTrainer.dir/TypingTrainerSession.cpp.o: /home/frederic/Document
   /usr/include/c++/12.1.0/any \
   /home/frederic/Documents/Universität/Advanced\ Programming/Typing\ Trainer/typing-trainer/src/TypingStatsRecorder.h \
   /usr/include/c++/12.1.0/chrono \
-  /home/frederic/Documents/Universität/Advanced\ Programming/Typing\ Trainer/typing-trainer/src/TrainingTextGenerator.h
+  /home/frederic/Documents/Universität/Advanced\ Programming/Typing\ Trainer/typing-trainer/src/TrainingTextGenerator.h \
+  /home/frederic/Documents/Universität/Advanced\ Programming/Typing\ Trainer/typing-trainer/src/utils.h
 
 CMakeFiles/TypingTrainer.dir/TypingTrainerUI.cpp.o: /home/frederic/Documents/Universität/Advanced\ Programming/Typing\ Trainer/typing-trainer/src/TypingTrainerUI.cpp \
   /usr/include/stdc-predef.h \
@@ -2597,8 +2598,22 @@ CMakeFiles/TypingTrainer.dir/utils.cpp.o: /home/frederic/Documents/Universität/
   /usr/include/c++/12.1.0/tr1/modified_bessel_func.tcc \
   /usr/include/c++/12.1.0/tr1/poly_hermite.tcc \
   /usr/include/c++/12.1.0/tr1/poly_laguerre.tcc \
-  /usr/include/c++/12.1.0/tr1/riemann_zeta.tcc
+  /usr/include/c++/12.1.0/tr1/riemann_zeta.tcc \
+  /usr/include/c++/12.1.0/set \
+  /usr/include/c++/12.1.0/bits/stl_tree.h \
+  /usr/include/c++/12.1.0/ext/aligned_buffer.h \
+  /usr/include/c++/12.1.0/bits/node_handle.h \
+  /usr/include/c++/12.1.0/bits/stl_set.h \
+  /usr/include/c++/12.1.0/bits/stl_multiset.h \
+  /usr/include/c++/12.1.0/bits/erase_if.h \
+  /usr/include/c++/12.1.0/map \
+  /usr/include/c++/12.1.0/bits/stl_map.h \
+  /usr/include/c++/12.1.0/tuple \
+  /usr/include/c++/12.1.0/bits/uses_allocator.h \
+  /usr/include/c++/12.1.0/bits/stl_multimap.h
 
+
+/usr/include/c++/12.1.0/bits/stl_multiset.h:
 
 /usr/include/c++/12.1.0/math.h:
 
@@ -2878,6 +2893,8 @@ CMakeFiles/TypingTrainer.dir/utils.cpp.o: /home/frederic/Documents/Universität/
 
 /usr/include/c++/12.1.0/bits/cxxabi_init_exception.h:
 
+/usr/include/c++/12.1.0/bits/stl_set.h:
+
 /usr/include/x86_64-linux-gnu/bits/timex.h:
 
 /usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
@@ -2993,6 +3010,8 @@ CMakeFiles/TypingTrainer.dir/utils.cpp.o: /home/frederic/Documents/Universität/
 /usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
 
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
+
+/usr/include/c++/12.1.0/set:
 
 /usr/include/linux/errno.h:
 

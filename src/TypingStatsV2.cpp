@@ -32,16 +32,16 @@ TypingStats::TypingStats()
     total_num_wrongly_typed_chars = 0;
     total_time_typed_ms = 0;
 
-    for(int i = 0; i < 9; i++)
+    for(int i = 1; i <= 10; i++)
         errors_per_finger[i] = 0;
 
-    for(int i = 0; i < 5; i++)
+    for(int i = 1; i <= 5; i++)
         errors_per_row[i] = 0;
 
-    for(int i = 0; i < 9; i++)
+    for(int i = 1; i <= 10; i++)
         typings_per_finger[i] = 0;
 
-    for(int i = 0; i < 5; i++)
+    for(int i = 1; i <= 5; i++)
         typings_per_row[i] = 0;
 }
 
@@ -153,16 +153,16 @@ void TypingStats::flush()
     errors_per_row.clear();
     errors_per_finger.clear();
 
-    for(int i = 0; i < 9; i++)
+    for(int i = 1; i <= 10; i++)
         errors_per_finger[i] = 0;
 
-    for(int i = 0; i < 5; i++)
+    for(int i = 1; i <= 5; i++)
         errors_per_row[i] = 0;
 
-    for(int i = 0; i < 9; i++)
+    for(int i = 1; i <= 10; i++)
         typings_per_finger[i] = 0;
 
-    for(int i = 0; i < 5; i++)
+    for(int i = 1; i <= 5; i++)
         typings_per_row[i] = 0;
 }
 
