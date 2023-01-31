@@ -572,7 +572,7 @@ void TypingTrainerUI::run_typing_trainer_session()
         {
             // This is a cosmetic fix that is needed
             mvwaddch(input_text_win, 1, 
-                typing_trainer_session->pos_in_training_text() - text_segment_start + 1, ' '); 
+                typing_trainer_session->pos_in_training_text() - text_segment_start, ' '); 
 
             // In the beginning, the current input position will move from left to right.
             // At half of the window size, we stop moving the input position and move
