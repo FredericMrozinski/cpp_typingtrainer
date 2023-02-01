@@ -1,3 +1,0 @@
-/home/frederic/Documents/Universität/Advanced Programming/Typing Trainer/typing-trainer/build/CMakeFiles/TypingTrainer.dir
-/home/frederic/Documents/Universität/Advanced Programming/Typing Trainer/typing-trainer/build/CMakeFiles/edit_cache.dir
-/home/frederic/Documents/Universität/Advanced Programming/Typing Trainer/typing-trainer/build/CMakeFiles/rebuild_cache.dir

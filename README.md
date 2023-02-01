@@ -29,12 +29,12 @@ nlohmann-JSON is a C++ JSON parser library that we use in this program. Unfortun
 
 ## Building
 
-To build be program, feel free to use the existing `CMakeLists.txt` file provided. For that, open a terminal session and navigate into the `build`-folder. From there you can run
+To build the program, feel free to use the existing `CMakeLists.txt` file provided. For that, open a terminal session and navigate into the `build`-folder. From there you can run
 
     cmake ../src
     make
 
-and enjoy the outcome!
+and enjoy the outcome (executable can be found in `bin`-folder!
 
 # Project description from class-instructors  ✌️
 

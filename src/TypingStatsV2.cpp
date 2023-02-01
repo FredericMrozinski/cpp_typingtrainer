@@ -85,7 +85,7 @@ void TypingStats::add_correctly_typed(char c)
     typings_per_row[row]++;
 
     // Add to the per finger statistic
-    int finger = get_row_for_key(c);
+    int finger = get_finger_for_key(c);
     typings_per_finger[finger]++;
 }
 
@@ -106,7 +106,7 @@ void TypingStats::add_wrongly_typed(char c)
     typings_per_row[row]++;
 
     // Add to the per finger statistic
-    int finger = get_row_for_key(c);
+    int finger = get_finger_for_key(c);
     errors_per_finger[finger]++;
     typings_per_finger[finger]++;
 }

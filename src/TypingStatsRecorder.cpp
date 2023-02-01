@@ -46,11 +46,11 @@ void TypingStatsRecorder::record_char_typed(char typed, char expected)
     {
         session_stats->add_correctly_typed(typed);
         session_stats->add_char_pair_typed(last_typed_char, expected, time_since_last_event_ms); 
+        last_typed_char = typed;
     }
     else
         session_stats->add_wrongly_typed(expected);
 
-    last_typed_char = typed;
     last_event_ms = current_event_ms;
 }
 
