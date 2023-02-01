@@ -61,7 +61,7 @@ TypingStats::TypingStats(nlohmann::json j)
 }
 
 template<typename T1, typename T2>
-void merge_map_to_map(std::map<T1, T2>& to_merge_into, const std::map<T1, T2>& to_merge_from)
+inline void merge_map_to_map(std::map<T1, T2>& to_merge_into, const std::map<T1, T2>& to_merge_from)
 {
     for(const auto& tmf_map_entry : to_merge_from)
     {

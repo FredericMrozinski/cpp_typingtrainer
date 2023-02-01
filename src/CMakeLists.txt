@@ -9,7 +9,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 
 
 # Only for debugging purposes!
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
 add_executable(TypingTrainer main.cpp TypingTrainerUI.cpp TypingTrainerSession.cpp User.cpp
 TypingStatsV2.cpp TypingStatsRecorder.cpp utils.cpp TrainingTextGenerator.cpp)
