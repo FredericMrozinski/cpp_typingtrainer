@@ -34,7 +34,7 @@ To build the program, feel free to use the existing `CMakeLists.txt` file provid
     cmake ../src
     make
 
-and enjoy the outcome (executable can be found in `bin`-folder!
+and enjoy the outcome (executable can be found in `bin`-folder)!
 
 # Project description from class-instructors  ✌️
 
