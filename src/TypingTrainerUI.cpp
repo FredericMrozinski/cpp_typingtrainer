@@ -37,8 +37,10 @@ void TypingTrainerUI::show_program_menu()
     {
         clear();
 
+        switch (menu_page)
+        {
         // Main menu page
-        if(menu_page == 0)
+        case 0:
         {
             addstr("=====================Typing Trainer=======================\n");
             addstr("Select from the following options by pressing a number-key: \n\n");
@@ -47,8 +49,9 @@ void TypingTrainerUI::show_program_menu()
             addstr("(3) Load user and train\n");
             addstr("(4) Exit\n");
         }
+            break;
         // Add user page
-        else if(menu_page == 1)
+        case 1:
         {
             if(TypingTrainerSession::users()->size() >= 8)
             {
@@ -94,7 +97,7 @@ void TypingTrainerUI::show_program_menu()
             continue;
         }
         // Delete user page
-        else if(menu_page == 2)
+        case 2:
         {
             addstr("=====================Typing Trainer=======================\n");
             addstr("Select the user you want to delete:\n\n");
@@ -122,8 +125,9 @@ void TypingTrainerUI::show_program_menu()
             TypingTrainerSession::write_users();
             continue;
         }
+            break;
         // Load user page
-        else if(menu_page == 3)
+        case 3:
         {
             addstr("=====================Typing Trainer=======================\n");
             addstr("Select the user you want to load:\n\n");
@@ -154,10 +158,10 @@ void TypingTrainerUI::show_program_menu()
                 menu_page = 0;
                 continue;
             }
-            
         }
+            break;
         // Show typing menu for a user
-        else if(menu_page == 4)
+        case 4:
         {
             addstr("=====================Typing Trainer=======================\n");
             addstr(("Hi, " + user_selected->user_name + ", what do you want to do?\n\n").c_str());
@@ -167,8 +171,9 @@ void TypingTrainerUI::show_program_menu()
             addstr("(4) Start practicing\n");
             addstr("(5) Go back to main menu\n");
         }
+            break;
         // Change difficulty of user
-        else if(menu_page == 5)
+        case 5:
         {
             if(!first_set_of_difficulty)
             {
@@ -194,10 +199,10 @@ void TypingTrainerUI::show_program_menu()
             addstr("(1) Easy, i.e. middle row key\n");
             addstr("(2) Intermediate, i.e. middle and top row keys\n");
             addstr("(3) Difficult, i.e. all keys\n");
-
         }
+            break;
         // Show user progess
-        else if(menu_page == 6)
+        case 6:
         {
             int stats_page = 0;
             bool use_relative_units = false;
@@ -334,8 +339,9 @@ void TypingTrainerUI::show_program_menu()
             menu_page = 4;
             continue;
         }
+            break;
         // Reset statistics
-        else if(menu_page == 7)
+        case 7:
         {
             user_selected->user_typing_stats->flush();
 
@@ -349,8 +355,9 @@ void TypingTrainerUI::show_program_menu()
             TypingTrainerSession::write_users();
             continue;
         }
+            break;
         // Run typing trainer
-        else if(menu_page == 8)
+        case 8:
         {
             addstr("=====================Typing Trainer=======================\n");
             addstr(("Hi, " + user_selected->user_name + ", when you're ready to start, press any key.\n\n").c_str());
@@ -372,6 +379,8 @@ void TypingTrainerUI::show_program_menu()
             menu_page = 6;
             continue;
         }
+            break;
+        }
 
         user_input = getch();
 
@@ -380,7 +389,9 @@ void TypingTrainerUI::show_program_menu()
             has already happened above also but only for the "special" cases
             where the menu was more dynamic than just plain navigation.
         */
-        if(menu_page == 0)
+        switch (menu_page)
+        {
+        case 0:
         {
             if(user_input >= '1' && user_input <= '3')
             {
@@ -394,7 +405,8 @@ void TypingTrainerUI::show_program_menu()
             }
             user_input = 0;
         }
-        else if(menu_page == 4)
+            break;
+        case 4:
         {
             if(user_input == '1')
                 menu_page = 6;
@@ -410,7 +422,8 @@ void TypingTrainerUI::show_program_menu()
                 user_selected = nullptr;
             }
         }
-        else if(menu_page == 5)
+            break;
+        case 5:
         {
             if(user_input >= '1' && user_input <= '3')
             {
@@ -419,7 +432,8 @@ void TypingTrainerUI::show_program_menu()
                 TypingTrainerSession::write_users();
 
             }
-            
+        }
+            break;
         }
     }
 
@@ -439,13 +453,12 @@ bool is_valid_text_char(char c)
     '!', '?', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '\\', '/', 
     '{', '[', ']', '}', '|', ':', ';', '<', '>', '~', '`'};
 
-    bool c_valid_text_char = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') 
-        || (c >= '0' && c <= '9');
-
-    for(int i = 0; i < allowed_special_chars.size() && !c_valid_text_char; i++)
-        c_valid_text_char = (c_valid_text_char || c == allowed_special_chars[i]);
-        
-    return c_valid_text_char;
+    if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))
+        return true;
+    else if(std::find(allowed_special_chars.begin(), allowed_special_chars.end(), c) != allowed_special_chars.end())   
+        return true;
+    else
+        return false;
 }
 
 void TypingTrainerUI::run_typing_trainer_session()
