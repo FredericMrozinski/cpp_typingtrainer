@@ -6,6 +6,8 @@ We used `gprof` to find potential efficiency leaks. However, we did not find any
 
 Further, even though the TypingTrainer does run in real-time, the "computational repetion rate" is given by the users' typing speed, which is typically slow. We therefore spend most time waiting for the user's input. This time however does not count as computation time as the program is in an idle-state during the waiting time.
 
+So to check our assumptions for validity, we also added a lag-tracker in `TypingTrainerUI`. After each typing training, the average lag for the statistical processing of a key-input is measured. Running this on our computers, we typically get an average lag (per keystroke) of about 1/3 of a millisecond. This lag is negligible - it's even less than the average casting bias for time-points to an integer representation of milliseconds (casting bias is on average 1/2 ms).
+
 ## Optimization applied
 
 Firstly, the results described above do not require any heavy optimization. Therefore, even though at parts some computations might be minimally redundant, we do not shoot for fixing those for the sake of keeping code readability with barely any performance loss. We'd like to refer from the lecture where the key argument of optimization was: don't optimize unless it's necessary.

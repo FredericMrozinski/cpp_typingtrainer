@@ -1,6 +1,7 @@
 #include "TypingTrainerUI.h"
 #include <string>
 #include <array>
+#include <chrono>
 #include "utils.h"
 
 std::unique_ptr<TypingTrainerSession> typing_trainer_session;
@@ -509,6 +510,18 @@ void TypingTrainerUI::run_typing_trainer_session()
         typing_trainer_session->pos_in_training_text() - text_segment_start)).c_str());
     wrefresh(input_text_win);
 
+    // The following two variables are used to measure the lag of the
+    // software. We purposefully put this here (instead of into the controller)
+    // because we want to obviously account for all called code to get
+    // a good lag-approximation.
+    std::chrono::time_point<std::chrono::system_clock> last_time_measure;
+    last_time_measure = std::chrono::system_clock::now();
+    auto total_lag = last_time_measure - last_time_measure;
+
+    // While something similar can be obtained from TypingStats, we also want
+    // to count non-meaningful keystrokes in order to compute the lag
+    int key_stroke_counter = 0;
+
     while(typing_trainer_session->training_running())
     {
         // Compute which part of the string is currently displayed in the window
@@ -523,7 +536,15 @@ void TypingTrainerUI::run_typing_trainer_session()
             - text_segment_start)).c_str());
         wrefresh(input_text_win);
 
-        while(!is_valid_text_char(input_char = getch()))
+        auto current_time = std::chrono::system_clock::now();
+        total_lag += (current_time - last_time_measure);
+
+        input_char = getch();
+        key_stroke_counter++;
+
+        last_time_measure = std::chrono::system_clock::now();
+
+        while(!is_valid_text_char(input_char))
         {
             if(input_char == KEY_ENTER)
             {
@@ -558,6 +579,13 @@ void TypingTrainerUI::run_typing_trainer_session()
                 */
                 flushinp();
             }
+
+            total_lag += (std::chrono::system_clock::now() - last_time_measure);
+
+            input_char = getch();
+
+            last_time_measure = std::chrono::system_clock::now();
+            key_stroke_counter++;
         }
 
         // In case the user aborts the training, we need to break the outer
@@ -615,8 +643,10 @@ void TypingTrainerUI::run_typing_trainer_session()
             / elapsed_time_sec * 60.;
     else
         chars_per_minute = 0;
+
+    float total_lag_ms = std::chrono::duration_cast<std::chrono::milliseconds>(total_lag).count();
     mvwprintw(statistic_info_win, 1, 20, ("Elapsed time: " + std::to_string(elapsed_time_sec) + "sec.").c_str());
-    mvwprintw(statistic_info_win, 1, 44, ("Characters / min.: " + std::to_string(chars_per_minute)).c_str());
+    mvwprintw(statistic_info_win, 1, 44, ("Avg. software lag (ms): " + float_to_prec(total_lag_ms / key_stroke_counter, 2)).c_str());
     mvwprintw(statistic_info_win, 1, window_length - 23, "Press 'Enter' to exit");
     wrefresh(statistic_info_win);
     while(getch() != '\n');
